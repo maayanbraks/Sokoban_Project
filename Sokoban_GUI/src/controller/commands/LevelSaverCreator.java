@@ -1,6 +1,5 @@
 package controller.commands;
 
-import model.data.LevelLoader;
 import model.data.LevelSaver;
 
 public abstract class LevelSaverCreator {

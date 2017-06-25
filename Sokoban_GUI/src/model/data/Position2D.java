@@ -10,51 +10,51 @@ package model.data;
 import java.io.Serializable;
 
 public class Position2D implements Serializable {
-	private int _x;
-	private int _y;
-	private boolean _wasTarget;//if the position is target box
-	 
+	private int _x;// up-down
+	private int _y;// right-left
+	private boolean _wasTarget;// if the position is target box
+
 	/**
-	* C'TOR
-	*/
+	 * C'TOR
+	 */
 	public Position2D() {
-			this._x=0;
-			this._y=0;
-			
-			_wasTarget=false;
+		this._x = 0;
+		this._y = 0;
+
+		_wasTarget = false;
 	}
-	
+
 	/**
-	* C'TOR
-	*/
-	public Position2D(int x,int y) {
-				this._x=x;
-				this._y=y;
-				
-				_wasTarget=false;
+	 * C'TOR
+	 */
+	public Position2D(int x, int y) {
+		this._x = x;
+		this._y = y;
+
+		_wasTarget = false;
 	}
-	
+
 	/**
-	* C'TOR
-	*/
-	public Position2D(int x,int y,boolean target) {
-				this._x=x;
-				this._y=y;
-				this._wasTarget=target;
+	 * C'TOR
+	 */
+	public Position2D(int x, int y, boolean target) {
+		this._x = x;
+		this._y = y;
+		this._wasTarget = target;
 	}
-	
+
 	/**
-	* copy C'TOR
-	*/
+	 * copy C'TOR
+	 */
 	public Position2D(Position2D newPos) {
-		this._x=newPos._x;
-		this._y=newPos._y;
-		this._wasTarget=newPos._wasTarget;
+		this._x = newPos._x;
+		this._y = newPos._y;
+		this._wasTarget = newPos._wasTarget;
 	}
-	
+
 	/**
-	* Getters and Setters
-	*/
+	 * Getters and Setters
+	 */
 	public boolean isWasTarget() {
 		return _wasTarget;
 	}
@@ -66,14 +66,32 @@ public class Position2D implements Serializable {
 	public int getX() {
 		return _x;
 	}
+
 	public void setX(int x) {
 		this._x = x;
 	}
+
 	public int getY() {
 		return _y;
 	}
+
 	public void setY(int y) {
 		this._y = y;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if ((this._x == ((Position2D) obj)._x) && (this._y == ((Position2D) obj)._y))
+			return true;
+		else
+			return false;
+
+	}
+
+	@Override
+	public int hashCode() {
+		String code = "[" + Integer.toString(_x) + "," + Integer.toString(_y) + "]";
+		return code.hashCode();
+	}
+
 }

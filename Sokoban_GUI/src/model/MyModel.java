@@ -5,7 +5,6 @@
 
 package model;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,18 +21,17 @@ import model.data.MyTextLevelSaver;
 import model.data.Position2D;
 import model.policy.MySokobanPolicy;
 
-public class MyModel extends Observable implements Model{
+public class MyModel extends Observable implements Model {
 
 	Level2D _lvl;
 	MySokobanPolicy _msp;
-
 
 	public Level2D getLevel() {
 		return _lvl;
 	}
 
-	public void setLevel(Level2D lvl){
-		_lvl=new Level2D(lvl);
+	public void setLevel(Level2D lvl) {
+		_lvl = new Level2D(lvl);
 	}
 
 	public MySokobanPolicy getPolicy() {
@@ -42,66 +40,56 @@ public class MyModel extends Observable implements Model{
 
 	@Override
 	public void move(Position2D dest) {
-		Actor actor=_lvl.getActors().get(0);
-		Position2D old=actor.getPos();
+		Actor actor = _lvl.getActors().get(0);
+		Position2D old = actor.getPos();
 
+		_msp = new MySokobanPolicy(old, getLevel());
 
-		_msp=new MySokobanPolicy(old,getLevel());
+		if (!(_msp.isFinished())) {
 
-		if (!(_msp.isFinished())){
-
-			if(_msp.check(dest)){ //our POLICY
-				Item itmInDest=getLevel().getItemInPlace(dest);//destination item
+			if (_msp.check(dest)) { // our POLICY
+				Item itmInDest = getLevel().getItemInPlace(dest);// destination
+																	// item
 				dest.setWasTarget(getLevel().getItemInPlace(itmInDest.getPos()).getPos().isWasTarget());
 
-				if((itmInDest.getType().compareTo("Box"))==0){
+				if ((itmInDest.getType().compareTo("Box")) == 0) {
 					Position2D boxDest = new Position2D(_msp.newPos(dest));
 					boxDest.setWasTarget(getLevel().getItemInPlace(boxDest).getPos().isWasTarget());
-					((Box)itmInDest).move(dest, boxDest, getLevel());
+					((Box) itmInDest).move(dest, boxDest, getLevel());
 				}
-				actor.move(old, dest,getLevel());
+				actor.move(old, dest, getLevel());
 
-				this._lvl.setCounter(this._lvl.getCounter()+1);
-			}
-			else{
-				System.out.println("You can't move there!\n" +
-						"Please try again according the rules:\n" +
-						_msp.getPolicy());
+				this._lvl.setCounter(this._lvl.getCounter() + 1);
+			} else {
+				System.out.println(
+						"You can't move there!\n" + "Please try again according the rules:\n" + _msp.getPolicy());
 			}
 
 			this.setChanged();
 			this.notifyObservers("display");
 
-
-
-			if (_msp.isFinished()){
+			if (_msp.isFinished()) {
 				this.setChanged();
 				this.notifyObservers("finish");
 			}
 		}
 	}
 
-
-
-
 	@Override
 	public void load(LevelLoaderCreator lc) {
-		Level2D newLevel=new Level2D();
-		if (lc==null){
+		Level2D newLevel = new Level2D();
+		if (lc == null) {
 			this.setLevel(new Level2D());
-			lc.setComment("There is a problem with level loader./n" +
-								"Now the level is NULL");
-		}
-		else{
+			lc.setComment("There is a problem with level loader./n" + "Now the level is NULL");
+		} else {
 			try {
-				newLevel=((lc.create()).loadLevel(new FileInputStream(lc.getPath())));
-			}
-			catch (FileNotFoundException e) {
+				newLevel = ((lc.create()).loadLevel(new FileInputStream(lc.getPath())));
+			} catch (FileNotFoundException e) {
 				lc.unknownPath();
 				lc.setComment("unknown file");
-				newLevel=new Level2D();
+				newLevel = new Level2D();
 			}
-			_lvl=newLevel;
+			_lvl = newLevel;
 		}
 
 		this.setChanged();
@@ -111,19 +99,17 @@ public class MyModel extends Observable implements Model{
 	@Override
 	public void save(LevelSaverCreator ls) {
 
-		if (ls==null){
+		if (ls == null) {
 			this.setLevel(null);
 			System.out.println("There is a problem with level saver.\nNow the level is NULL");
-		}
-		else{
+		} else {
 			try {
-					ls.create().SaveLevel(new FileOutputStream(ls.getPath()),_lvl);
-				} catch (IOException e) {
-					ls.setComment("coudnt make the save");
-				}
+				ls.create().SaveLevel(new FileOutputStream(ls.getPath()), _lvl);
+			} catch (IOException e) {
+				ls.setComment("coudnt make the save");
+			}
 		}
 	}
-
 
 	@Override
 	public void exit() {
@@ -132,14 +118,9 @@ public class MyModel extends Observable implements Model{
 		try {
 			System.in.close();
 			System.exit(0);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 		}
 
 	}
-
-
-
-
 
 }
